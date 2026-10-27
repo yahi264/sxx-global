@@ -12,6 +12,7 @@
     footer: 'Enerji, petrol & gaz, savunma ve raylı sistem projeleri için tedarik, ekspedit & PM desteği ve bağımsız muayene — Türkiye’de güvenilir bir tedarikçi ağı.',
     pages: 'Kurumsal', legal: 'Gizlilik', points: 'Bir bakışta', industries: 'Hizmet verilen sektörler', network: 'Tedarikçi ağı',
     contactTitle: '<i>Projeniz</i> hakkında konuşalım', contactLead: 'Belirli bir proje için yönlendirmeye ihtiyacınız olsun, iş birliği fırsatlarını keşfetmek isteyin ya da hizmetlerimizle ilgili bir sorunuz olsun, ekibimiz yardıma hazır.',
+    scroll: 'Kaydır',
     sendMail: 'E-posta ile gönder', sendWa: 'WhatsApp ile gönder', step: 'Adım', sample: 'Örnek gösterim',
   },
   home: {
@@ -27,6 +28,7 @@
     comm: ['Ürün grupları', 'Neleri <i>tedarik</i> ediyoruz', 'Ağır ve hafif kaynaklı yapılar, talaşlı imalat, sac işleri, dövme ve döküm — gerçek projelerde sınanmış bir ağ üzerinden.'],
     why: ['Neden biz', '<i>Kanıtlanmış</i> iş birliklerine dayalı', [['20+ yıllık deneyim', 'Endüstriyel tedarik zincirleri, enerji ve ağır imalatta yirmi yılı aşkın tecrübe.'], ['Denetlenmiş tedarikçi ağı', 'Her tedarikçi daha önce tamamlanan projelerde sınanmıştır.'], ['Zamanında teslimat', 'Termin planları atölye kapasitesiyle doğrulanır, ardından yerinde izlenir.'], ['Önce uygunluk', 'Çalışmalar onaylı ITP, ilgili standartlar ve proje şartnamelerine göre yürütülür.'], ['Şeffaf raporlama', 'Yönetimin erken karar verip harekete geçebilmesi için zamanında ve detaylı raporlar.'], ['Maliyet etkin', 'Kaliteden ve güvenilirlikten ödün vermeden rekabetçi çözümler.']]],
     sectors: ['Sektörler', '<i>Hatanın kabul edilmediği</i> yerlerde güvenilen', 'Müşterilerimiz enerji, petrol & gaz, proses tesisleri, basınçlı kaplar, savunma ve raylı sistemlerde faaliyet gösteriyor.'],
+    reach: ['Küresel erişim', 'Türkiye’nin sanayi gücünden <i>dünyadaki projelere</i>', 'Türkiye’de denetlenmiş bir üretim ağı; proje nerede olursa olsun siparişinizi izleyen tedarik, ekspedit ve muayene.', ['Avrupa', 'Orta Doğu', 'Afrika', 'Orta Asya', 'Amerika'], 'Türkiye'],
     cta: ['Tedarik edilecek bir paketiniz ya da takip edilecek bir tedarikçiniz mi var?', 'Kapsamınızı ve çizimlerinizi gönderin. Size bir plan, tedarikçiler ve teklifle dönelim.', 'Teklif isteyin'],
   },
   services: {

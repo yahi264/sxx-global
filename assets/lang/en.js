@@ -12,6 +12,7 @@
     footer: 'Sourcing, expediting & PM support and independent inspection for energy, oil & gas, defence and railway projects — a trusted supplier network in Türkiye.',
     pages: 'Company', legal: 'Privacy', points: 'At a glance', industries: 'Industries served', network: 'Supplier network',
     contactTitle: 'Let’s talk about <i>your project</i>', contactLead: 'Whether you need guidance on a specific project, want to explore a partnership or simply have a question about our services, our team is ready to help.',
+    scroll: 'Scroll',
     sendMail: 'Send by email', sendWa: 'Send by WhatsApp', step: 'Step', sample: 'Illustrative example',
   },
   home: {
@@ -27,6 +28,7 @@
     comm: ['Commodities', 'What we <i>source</i>', 'Heavy and light welded structures, machined parts, sheet metal, forgings and castings — through a network vetted on real projects.'],
     why: ['Why work with us', 'Built on <i>proven</i> partnerships', [['20+ years of experience', 'More than two decades in industrial supply chains, energy and heavy fabrication.'], ['Vetted supplier network', 'Every supplier has been tested through previously accomplished projects.'], ['On-time delivery', 'Schedules validated against real shop capacity, then monitored on site.'], ['Compliance first', 'Work follows the approved ITP, the applicable codes and your project standards.'], ['Transparent reporting', 'Timely, detailed reports so management can decide and act early.'], ['Cost-effective', 'Competitive solutions without compromising quality or reliability.']]],
     sectors: ['Sectors', 'Trusted where <i>failure is not an option</i>', 'Our clients span energy, oil & gas, process plants, pressure vessels, defence and railway.'],
+    reach: ['Global reach', 'From Türkiye’s industrial base <i>to projects worldwide</i>', 'A vetted manufacturing network in Türkiye, with sourcing, expediting and inspection that follow your order wherever the project is.', ['Europe', 'Middle East', 'Africa', 'Central Asia', 'Americas'], 'Türkiye'],
     cta: ['Have a package to source or a supplier to follow?', 'Send us your scope and drawings. We will come back with a plan, suppliers and a quotation.', 'Request a quote'],
   },
   services: {

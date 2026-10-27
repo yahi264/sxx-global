@@ -12,6 +12,7 @@
     footer: 'Sourcing, expediting & support PM et inspection indépendante pour les projets énergie, pétrole & gaz, défense et ferroviaire — un réseau de fournisseurs fiable en Turquie.',
     pages: 'Entreprise', legal: 'Confidentialité', points: 'En bref', industries: 'Secteurs servis', network: 'Réseau de fournisseurs',
     contactTitle: 'Parlons de <i>votre projet</i>', contactLead: 'Que vous ayez besoin de conseils sur un projet précis, que vous souhaitiez explorer un partenariat ou simplement poser une question sur nos services, notre équipe est prête à vous aider.',
+    scroll: 'Défiler',
     sendMail: 'Envoyer par e-mail', sendWa: 'Envoyer par WhatsApp', step: 'Étape', sample: 'Exemple illustratif',
   },
   home: {
@@ -27,6 +28,7 @@
     comm: ['Familles de produits', 'Ce que nous <i>sourçons</i>', 'Structures mécano-soudées lourdes et légères, usinage, tôlerie, pièces forgées et moulées — via un réseau éprouvé sur des projets réels.'],
     why: ['Pourquoi nous choisir', 'Fondé sur des partenariats <i>éprouvés</i>', [['Plus de 20 ans d’expérience', 'Plus de deux décennies dans les chaînes d’approvisionnement industrielles, l’énergie et la chaudronnerie lourde.'], ['Réseau de fournisseurs qualifiés', 'Chaque fournisseur a fait ses preuves sur des projets déjà réalisés.'], ['Livraison dans les délais', 'Plannings validés selon la capacité réelle des ateliers, puis suivis sur place.'], ['La conformité d’abord', 'Travail selon l’ITP approuvé, les codes applicables et vos standards projet.'], ['Reporting transparent', 'Des rapports rapides et détaillés pour décider et agir tôt.'], ['Rentable', 'Des solutions compétitives sans compromis sur la qualité ni la fiabilité.']]],
     sectors: ['Secteurs', 'La confiance là où <i>l’échec n’est pas permis</i>', 'Nos clients couvrent l’énergie, le pétrole & gaz, les usines de process, les appareils à pression, la défense et le ferroviaire.'],
+    reach: ['Portée mondiale', 'De la base industrielle turque <i>aux projets du monde entier</i>', 'Un réseau de fabrication qualifié en Turquie, avec un sourcing, un expediting et une inspection qui suivent votre commande où que se trouve le projet.', ['Europe', 'Moyen-Orient', 'Afrique', 'Asie centrale', 'Amériques'], 'Turquie'],
     cta: ['Un lot à sourcer ou un fournisseur à suivre ?', 'Envoyez-nous votre périmètre et vos plans. Nous revenons vers vous avec un plan, des fournisseurs et une offre.', 'Demander un devis'],
   },
   services: {

@@ -12,6 +12,7 @@
     footer: 'Beschaffung, Expediting & PM-Unterstützung und unabhängige Inspektion für Projekte in Energie, Öl & Gas, Verteidigung und Bahn – ein bewährtes Lieferantennetz in der Türkei.',
     pages: 'Unternehmen', legal: 'Datenschutz', points: 'Auf einen Blick', industries: 'Bediente Branchen', network: 'Lieferantennetz',
     contactTitle: 'Sprechen wir über <i>Ihr Projekt</i>', contactLead: 'Ob Sie Unterstützung bei einem konkreten Projekt brauchen, eine Partnerschaft ausloten oder einfach eine Frage zu unseren Leistungen haben – unser Team hilft Ihnen gern.',
+    scroll: 'Scrollen',
     sendMail: 'Per E-Mail senden', sendWa: 'Per WhatsApp senden', step: 'Schritt', sample: 'Beispielhafte Darstellung',
   },
   home: {
@@ -27,6 +28,7 @@
     comm: ['Produktgruppen', 'Was wir <i>beschaffen</i>', 'Schwere und leichte Schweißkonstruktionen, Zerspanung, Blechbearbeitung, Schmiede- und Gussteile – über ein in echten Projekten bewährtes Netzwerk.'],
     why: ['Warum mit uns', 'Gebaut auf <i>bewährten</i> Partnerschaften', [['Über 20 Jahre Erfahrung', 'Mehr als zwei Jahrzehnte in industriellen Lieferketten, Energie und Schwerfertigung.'], ['Geprüftes Lieferantennetz', 'Jeder Lieferant hat sich in bereits abgeschlossenen Projekten bewährt.'], ['Termingerechte Lieferung', 'Zeitpläne werden mit der realen Werkstattkapazität abgeglichen und vor Ort überwacht.'], ['Konformität zuerst', 'Gearbeitet wird nach freigegebenem ITP, geltenden Normen und Ihren Projektstandards.'], ['Transparente Berichte', 'Zeitnahe, detaillierte Berichte, damit das Management früh entscheiden kann.'], ['Kosteneffizient', 'Wettbewerbsfähige Lösungen ohne Abstriche bei Qualität und Zuverlässigkeit.']]],
     sectors: ['Branchen', 'Vertraut, wo <i>Versagen keine Option ist</i>', 'Unsere Kunden kommen aus Energie, Öl & Gas, Prozessanlagen, Druckbehälterbau, Verteidigung und Bahn.'],
+    reach: ['Globale Reichweite', 'Von der Industriebasis der Türkei <i>zu Projekten weltweit</i>', 'Ein geprüftes Fertigungsnetz in der Türkei – mit Beschaffung, Expediting und Inspektion, die Ihren Auftrag begleiten, wo immer das Projekt liegt.', ['Europa', 'Naher Osten', 'Afrika', 'Zentralasien', 'Amerika'], 'Türkei'],
     cta: ['Ein Paket zu beschaffen oder einen Lieferanten zu verfolgen?', 'Senden Sie uns Umfang und Zeichnungen. Wir melden uns mit Plan, Lieferanten und Angebot.', 'Angebot anfordern'],
   },
   services: {

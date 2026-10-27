@@ -6,7 +6,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const app = $('#app');
 const PIC = 'assets/img/';
-const VER = 1;
+const VER = 2;
 
 let lang = 'en';
 try { lang = localStorage.getItem('sxx-lang') || 'en'; } catch (e) {}
@@ -101,30 +101,62 @@ const ROUTES = {
   rfq: rfqPage,
 };
 const WHY_ICONS = ['clock', 'users', 'gauge', 'shield', 'doc', 'globe'];
+const SLIDES = [['hero-weld.jpg', () => CM('heavy').t], ['forging.jpg', () => CM('forging').t], ['machining.jpg', () => CM('machining').t], ['sourcing.jpg', () => SV('sourcing').t], ['inspection.jpg', () => SV('inspection').t]];
+
+/* crossing marquee ribbons built from the pack's own titles */
+function marquee() {
+  const r1 = [...COMMODITIES.map((c) => CM(c.id).t), ...SERVICES.map((x) => SV(x.id).t)];
+  const r2 = [...SECTORS.map((x) => P().sectors[x.id][0]), ...NDT.map((k) => P().ndt[k][0])];
+  const row = (items, rev) => `<div class="mq-row ${rev ? 'rev' : ''}"><div class="mq-track">${[...items, ...items].map((t, i) => `<span class="${i % 2 ? 'o' : ''}" dir="auto">${t}</span><i>✦</i>`).join('')}</div></div>`;
+  return `<section class="mq" aria-hidden="true">${row(r1)}${row(r2, true)}</section>`;
+}
+
+/* global reach: dotted world map (equirectangular, lon -170..190) with routes from Türkiye */
+const MW = 1000;
+const proj = ([lon, lat]) => [((lon + 170) / 360) * MW, ((80 - lat) / 360) * MW];
+const ORIGIN = [35, 39];
+const REGIONS = [{ p: [9, 50], l: 'l' }, { p: [47, 24], l: 'b' }, { p: [17, 4], l: 'b' }, { p: [67, 44], l: 'r' }, { p: [-92, 38], l: 'b' }];
+const arcPath = (a, b) => { const [x1, y1] = proj(a), [x2, y2] = proj(b), d = Math.hypot(x2 - x1, y2 - y1); return `M${x1.toFixed(1)} ${y1.toFixed(1)}Q${((x1 + x2) / 2).toFixed(1)} ${((y1 + y2) / 2 - d * 0.35).toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`; };
+let DOTS = '';
+function reachMap() {
+  if (!DOTS && typeof WORLD_DOTS !== 'undefined') DOTS = WORLD_DOTS.map((p) => { const [x, y] = proj(p); return `<circle class="wdot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.3"/>`; }).join('');
+  const R = H().reach, [ox, oy] = proj(ORIGIN);
+  const lbl = (t, x, y, l) => { const o = { r: [9, 4, 'start'], l: [-9, 4, 'end'], b: [0, 18, 'middle'] }[l]; return `<text x="${(x + o[0]).toFixed(1)}" y="${(y + o[1]).toFixed(1)}" text-anchor="${o[2]}">${esc(t)}</text>`; };
+  return `<svg viewBox="150 40 640 250" aria-hidden="true">${DOTS}
+    ${REGIONS.map((r, i) => `<path id="rt${i}" class="route" style="--dl:${(0.3 + i * 0.25).toFixed(2)}s" d="${arcPath(ORIGIN, r.p)}"/>`).join('')}
+    ${REGIONS.map((r, i) => { const [x, y] = proj(r.p); return `<g class="mk" style="--dl:${(i * 0.3).toFixed(1)}s"><circle class="h" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4"/><circle class="d" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3"/>${lbl(R[3][i], x, y, r.l)}</g>`; }).join('')}
+    <g class="mk origin"><circle class="h" cx="${ox}" cy="${oy}" r="6"/><circle class="d" cx="${ox}" cy="${oy}" r="4.5"/>${lbl(R[4], ox, oy - 26, 'b')}</g>
+    ${REGIONS.map((r, i) => `<circle class="cargo" r="2.6"><animateMotion dur="${(3.4 + i * 0.5).toFixed(1)}s" begin="${(2.4 + i * 0.4).toFixed(1)}s" repeatCount="indefinite" rotate="auto"><mpath href="#rt${i}"/></animateMotion></circle>`).join('')}</svg>`;
+}
+const reachSection = () => { const R = H().reach; return `<section class="sec reach"><div class="wrap reach-in"><div>${sec(R[0], R[1], R[2])}<div class="reach-list rv">${R[3].map((t) => `<span><i></i>${t}</span>`).join('')}</div>
+  <div class="acts rv" style="margin-top:1.6rem"><a class="btn btn-gold" href="#/rfq">${I.doc} ${u('rfq')}</a></div></div><div class="rmap rv">${reachMap()}</div></div></section>`; };
 
 function home() {
   const h = H();
   return `
-  <section class="hero"><span class="grid-bg"></span><div class="wrap">
-    <div class="hero-in">
+  <section class="cine" id="cine">
+    <div class="cine-media" id="cineMedia">${SLIDES.map(([img], i) => `<div class="cs${i ? '' : ' on'}"><img src="${PIC + img}" alt="" ${i ? 'loading="lazy"' : ''}></div>`).join('')}<canvas id="sparks" aria-hidden="true"></canvas></div>
+    <div class="cine-shade"></div>
+    <div class="wrap cine-in" id="cineIn">
       <div>
-        <span class="kicker fx-up" style="--d:.1s">${h.kicker}</span>
-        <h1 class="fx-up" style="--d:.2s">${h.h1}</h1>
-        <p class="lead fx-up" style="--d:.35s">${h.lead}</p>
-        <div class="acts fx-up" style="--d:.45s"><a class="btn btn-plum mag" href="#/rfq">${I.doc} ${h.cta1}</a><a class="btn btn-ghost" href="#/#services">${h.cta2} ${I.arrow}</a></div>
-        <button class="hero-ai fx-up" style="--d:.55s" data-ai><span class="ai-av">${I.ai}</span><span><b>${h.ai[0]} <em>24/7</em></b><small>${h.ai[1]}</small></span>${I.arrow}</button>
+        <span class="kicker fx-up" style="--d:.15s">${h.kicker}</span>
+        <h1 class="wsplit">${h.h1}</h1>
+        <p class="lead fx-up" style="--d:.8s">${h.lead}</p>
+        <div class="acts fx-up" style="--d:.95s"><a class="btn btn-gold mag" href="#/rfq">${I.doc} ${h.cta1}</a><a class="btn btn-glass" href="#/#services">${h.cta2} ${I.arrow}</a></div>
+        <div class="rot fx-up" style="--d:1.1s"><span class="rot-ico">${I.factory}</span><span class="rot-win"><span class="rot-list" id="rotList">${[...SECTORS, SECTORS[0]].map((x) => `<b>${P().sectors[x.id][0]}</b>`).join('')}</span></span></div>
       </div>
-      <div class="hero-media fx-up" style="--d:.3s">
-        <div class="hero-photo"><img src="${PIC}hero-weld.jpg" alt="">
-          <div class="hud" aria-hidden="true"><div class="hud-top"><b>${CM('heavy').t}</b><span>${u('step')} ${ltr('5/8')}</span></div>
-            <div class="hud-bar">${JOURNEY.map((j, k) => `<i style="--k:${k}" class="${k === 4 ? 'cur' : k > 4 ? 'todo' : ''}"></i>`).join('')}</div>
-            <div class="hud-st"><i class="dot"></i>${P().journey.fab[0]} · ${I.check}<small>${u('sample')}</small></div></div></div>
-        <div class="float-card fc-a"><span class="fc-ico">${I.shield}</span><span><b>${h.fc1[0]}</b><small>${h.fc1[1]}</small></span></div>
-        <div class="float-card fc-b"><span class="fc-ico">${I.gauge}</span><span><b>${h.fc2[0]}</b><small>${h.fc2[1]}</small></span></div>
+      <div class="cine-side fx-up" style="--d:1.2s">
+        <div class="hud" aria-hidden="true"><div class="hud-top"><b>${CM('heavy').t}</b><span>${u('step')} ${ltr('5/8')}</span></div>
+          <div class="hud-bar">${JOURNEY.map((j, k) => `<i style="--k:${k}" class="${k === 4 ? 'cur' : k > 4 ? 'todo' : ''}"></i>`).join('')}</div>
+          <div class="hud-st"><i class="dot"></i>${P().journey.fab[0]} · ${I.check}<small>${u('sample')}</small></div></div>
+        <button class="hero-ai glass" data-ai><span class="ai-av">${I.ai}</span><span><b>${h.ai[0]} <em>24/7</em></b><small>${h.ai[1]}</small></span>${I.arrow}</button>
       </div>
     </div>
-    <div class="stats">${h.stats.map(([n, s, l]) => `<div class="rv"><b><span data-count="${n}">0</span><small>${s}</small></b><span>${l}</span></div>`).join('')}</div>
-  </div></section>
+    <div class="wrap cine-pager" id="cinePager">${SLIDES.map(([, t], i) => `<button type="button" data-slide="${i}" class="${i ? '' : 'on'}"><i></i><b>${ltr('0' + (i + 1))}</b><span>${t()}</span></button>`).join('')}</div>
+    <a class="scroll-cue" href="#/#services"><span></span>${u('scroll')}</a>
+  </section>
+  <section class="kpi-band"><div class="wrap"><div class="kpis">${h.stats.map(([n, s, l], i) => `<div class="rv"><span class="kpi-ico">${I[['clock', 'layers', 'box', 'factory'][i]]}</span><b><span data-count="${n}">0</span><small>${s}</small></b><span>${l}</span><i class="kpi-bar"></i></div>`).join('')}</div></div></section>
+  ${marquee()}
 
   <section class="sec" id="services"><div class="wrap">${sec(h.svc[0], h.svc[1], h.svc[2])}<div class="svc3">${SERVICES.map(svcCard).join('')}</div></div></section>
 
@@ -145,6 +177,8 @@ function home() {
     <div class="sectors">${SECTORS.map(sectorTile).join('')}</div>
   </div></section>
 
+  ${reachSection()}
+
   <section class="sec alt" id="ndt"><div class="wrap">${ndtTool()}</div></section>
   ${cta()}`;
 }
@@ -153,7 +187,7 @@ function home() {
 let jnCur = 4;
 function journeyTool() {
   return `<div class="journey rv" id="jnTool"><div class="jn-track"><span class="jn-fill" id="jnFill"></span>${JOURNEY.map((j, k) => `<button type="button" data-jn="${k}"><span>${I[j.icon]}</span>${P().journey[j.id][0]}</button>`).join('')}</div>
-    <div class="jn-panel" id="jnPanel"></div></div>`;
+    <div class="jn-panel" id="jnPanel"></div><div class="jn-auto" id="jnAuto"><i></i></div></div>`;
 }
 function renderJourney() {
   const box = $('#jnPanel'); if (!box) return;
@@ -306,13 +340,13 @@ function renderChrome() {
   document.documentElement.lang = lang;
   document.documentElement.dir = L().dir;
   $('#logo').innerHTML = LOGO; if ($('#introMark')) $('#introMark').innerHTML = LOGO;
-  $('#topbar').innerHTML = `<div class="wrap"><a href="${CO.phoneHref}">${I.phone}${ltr(CO.phone)}</a><a class="tb-mail" href="mailto:${CO.email}">${I.mail}${CO.email}</a><span class="tb-hours">${I.clock}${u('hours')}</span><span class="tb-badge">EN · TR · DE · FR · AR</span></div>`;
+  $('#topbar').innerHTML = `<div class="wrap"><a href="${CO.phoneHref}">${I.phone}${ltr(CO.phone)}</a><a class="tb-mail" href="mailto:${CO.email}">${I.mail}${CO.email}</a><span class="tb-hours">${I.clock}${u('hours')}</span><span class="tb-langs">${LANGS.map((l) => `<button type="button" data-lang="${l.code}" class="${l.code === lang ? 'on' : ''}" lang="${l.code}">${l.code.toUpperCase()}</button>`).join('')}</span></div>`;
   $('#nav').innerHTML = [['', 'home'], ['sourcing', 'sourcing', 'commodity'], ['expediting', 'expediting'], ['inspection', 'inspection'], ['sectors', 'sectors'], ['about', 'about'], ['contact', 'contact']]
     .map(([r, k, also]) => `<a href="#/${r}" data-r="${r}${also ? ' ' + also : ''}">${u(k)}</a>`).join('') +
-    `<button class="nav-theme" type="button" data-theme-toggle><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>☾ / ☀</button><a class="nav-book" href="#/rfq">${u('rfq')}</a>`;
+    `<button class="nav-theme" type="button" data-theme-toggle><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>☾ / ☀</button><a class="nav-book" href="#/rfq">${u('rfq')}</a><div class="nav-langs">${LANGS.map((l) => `<button type="button" data-lang="${l.code}" class="${l.code === lang ? 'on' : ''}"><span class="lflag">${FLAGS[l.code]}</span>${l.code.toUpperCase()}</button>`).join('')}</div>`;
   $('#aiPill').innerHTML = `${I.ai}<span>${u('aiName')}</span>`;
-  $('#langBtn').innerHTML = `<span class="lang-flag">${FLAGS[lang]}</span><span class="lang-code">${lang.toUpperCase()}</span><svg class="lang-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>`;
-  $('#langMenu').innerHTML = `<span class="lang-title">${u('chooseLang')}</span>` + LANGS.map((l) => `<button role="menuitemradio" aria-checked="${l.code === lang}" data-lang="${l.code}" class="${l.code === lang ? 'on' : ''}"><span class="lang-flag">${FLAGS[l.code]}</span><span class="lang-name"><b>${l.name}</b><small>${l.code.toUpperCase()}</small></span><svg class="lang-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>`).join('');
+  $('#langBtn').innerHTML = `<span class="lang-globe">${I.globe}</span><span class="lang-code">${lang.toUpperCase()}</span><svg class="lang-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>`;
+  $('#langMenu').innerHTML = `<span class="lang-title">${I.globe}${u('chooseLang')}</span>` + LANGS.map((l) => `<button role="menuitemradio" aria-checked="${l.code === lang}" data-lang="${l.code}" class="${l.code === lang ? 'on' : ''}"><span class="lflag">${FLAGS[l.code]}</span><span class="lang-name"><b>${l.name}</b></span><span class="lang-tag">${l.code.toUpperCase()}</span></button>`).join('');
   $('#hdrBook').innerHTML = `${I.doc} ${u('rfq')}`;
   $('#ftr').innerHTML = `<div class="wrap ftr-grid">
     <div><a href="#/" class="logo ftr-logo">${LOGO}</a><p>${u('footer')}</p>
@@ -346,7 +380,9 @@ function render() {
   const [pathQ, anchor] = raw.split('#');
   const [path, qs] = pathQ.split('?');
   const [name, ...args] = path.split('/').filter(Boolean);
+  stopMotion();
   app.innerHTML = (ROUTES[name || ''] || notFound)(new URLSearchParams(qs || ''), ...args.map(decodeURIComponent));
+  hdr.classList.toggle('over', !!$('#cine'));
   closeMenus();
   window.scrollTo({ top: 0, behavior: 'instant' });
   $$('#nav [data-r]').forEach((a) => a.classList.toggle('on', a.dataset.r.split(' ').includes(name || '')));
@@ -360,7 +396,9 @@ function after() {
   obs?.disconnect();
   obs = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; e.target.classList.add('in'); obs.unobserve(e.target); }), { threshold: 0.1 });
   $$('.rv', app).forEach((el, i) => { if (el.getBoundingClientRect().top < innerHeight) { el.classList.add('in'); return; } el.style.transitionDelay = (i % 4) * 0.06 + 's'; obs.observe(el); });
-  if ($('#jnTool')) renderJourney();
+  if ($('#jnTool')) { renderJourney(); autoJourney(); }
+  if ($('#cine')) initCine();
+  $$('.wsplit', app).forEach(splitWords);
   if ($('#ndtViz')) renderNdt();
   if ($('#rfqTool')) renderRfqSum();
   bindForms();
@@ -387,13 +425,18 @@ function bindForms() {
    Global UI
    ========================================================================== */
 const hdr = $('#hdr');
-window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 30), { passive: true });
+let ticking = false;
+window.addEventListener('scroll', () => {
+  hdr.classList.toggle('scrolled', scrollY > 30);
+  if (ticking || !$('#cine')) return; ticking = true;
+  requestAnimationFrame(() => { ticking = false; const y = scrollY, m = $('#cineMedia'), t = $('#cineIn'); if (m && y < 1200) m.style.transform = `translate3d(0, ${(y * 0.32).toFixed(1)}px, 0)`; if (t && y < 1200) { t.style.transform = `translate3d(0, ${(y * 0.14).toFixed(1)}px, 0)`; t.style.opacity = Math.max(0, 1 - y / 650).toFixed(3); } });
+}, { passive: true });
 const burger = $('#burger'), nav = $('#nav');
-burger.addEventListener('click', () => { const o = nav.classList.toggle('open'); burger.setAttribute('aria-expanded', o); document.body.classList.toggle('lock', o); });
+burger.addEventListener('click', () => { const o = nav.classList.toggle('open'); burger.setAttribute('aria-expanded', o); document.body.classList.toggle('lock', o); hdr.classList.toggle('menu', o); });
 nav.addEventListener('click', (e) => { if (e.target.closest('a')) closeMenus(); });
-function closeMenus() { nav.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); document.body.classList.remove('lock'); }
+function closeMenus() { nav.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); document.body.classList.remove('lock'); hdr.classList.remove('menu'); }
 const langBox = $('#lang');
-$('#langBtn').addEventListener('click', (e) => { e.stopPropagation(); const o = langBox.classList.toggle('open'); $('#langBtn').setAttribute('aria-expanded', o); });
+$('#langBtn').addEventListener('click', (e) => { e.stopPropagation(); const o = langBox.classList.toggle('open'); $('#langBtn').setAttribute('aria-expanded', o); if (o) $('#aiTeaser')?.setAttribute('hidden', ''); });
 document.addEventListener('click', (e) => { if (!e.target.closest('#lang')) { langBox.classList.remove('open'); $('#langBtn').setAttribute('aria-expanded', 'false'); } });
 async function setLang(code) {
   langBox.classList.remove('open');
@@ -409,7 +452,8 @@ document.addEventListener('click', (e) => {
     return;
   }
   const lb = e.target.closest('[data-lang]'); if (lb) { setLang(lb.dataset.lang); return; }
-  const jn = e.target.closest('[data-jn]'); if (jn) { jnCur = +jn.dataset.jn; renderJourney(); return; }
+  const jn = e.target.closest('[data-jn]'); if (jn) { jnCur = +jn.dataset.jn; jnUser = true; clearInterval(jnT); $('#jnAuto')?.classList.remove('run'); renderJourney(); return; }
+  const sl = e.target.closest('[data-slide]'); if (sl) { goSlide(+sl.dataset.slide); return; }
   const nd = e.target.closest('[data-ndt]'); if (nd) { ndtCur = nd.dataset.ndt; renderNdt(); return; }
   const rc = e.target.closest('[data-rc]'); if (rc) { rq.c = rc.dataset.rc; $$('[data-rc]').forEach((x) => x.classList.toggle('on', x === rc)); renderRfqSum(); return; }
   const rx = e.target.closest('[data-rx]'); if (rx) { const k = rx.dataset.rx; rq.x.has(k) ? rq.x.delete(k) : rq.x.add(k); rx.classList.toggle('on', rq.x.has(k)); renderRfqSum(); return; }
@@ -427,6 +471,99 @@ document.addEventListener('change', rqInput);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeAI(); closeMenus(); } });
 let toastT;
 function toast(html) { const el = $('#toast'); el.innerHTML = html; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 2600); }
+
+/* ==========================================================================
+   Motion: hero slideshow, sparks, rotator, split headline, auto journey and
+   card spotlight. Everything stops on route change and respects
+   prefers-reduced-motion.
+   ========================================================================== */
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SLIDE_MS = 6500;
+let slideT, rotT, jnT, sparkStop, slideCur = 0, rotCur = 0, jnUser = false;
+function stopMotion() { clearInterval(slideT); clearInterval(rotT); clearInterval(jnT); sparkStop?.(); sparkStop = null; }
+function goSlide(i) {
+  const cs = $$('.cs'), pg = $$('#cinePager button'); if (!cs.length) return;
+  slideCur = (i + cs.length) % cs.length;
+  cs.forEach((c, k) => c.classList.toggle('on', k === slideCur));
+  pg.forEach((b, k) => { b.classList.remove('on'); b.classList.toggle('done', k < slideCur); });
+  void pg[slideCur].offsetWidth; pg[slideCur].classList.add('on');
+  clearInterval(slideT); if (!REDUCED) slideT = setInterval(() => goSlide(slideCur + 1), SLIDE_MS);
+}
+function initCine() {
+  $('#cinePager')?.style.setProperty('--dur', SLIDE_MS / 1000 + 's');
+  goSlide(0);
+  const list = $('#rotList'), n = SECTORS.length;
+  rotCur = 0;
+  if (list && !REDUCED) rotT = setInterval(() => {
+    rotCur++; list.style.transition = ''; list.style.transform = `translateY(-${rotCur * 1.6}em)`;
+    if (rotCur === n) setTimeout(() => { list.style.transition = 'none'; list.style.transform = 'translateY(0)'; rotCur = 0; }, 650);
+  }, 2400);
+  const cv = $('#sparks'); if (cv && !REDUCED) sparkStop = sparks(cv);
+}
+/* welding sparks and drifting embers on a canvas */
+function sparks(cv) {
+  const ctx = cv.getContext('2d'); let W = 0, H = 0, raf = 0, last = performance.now(), next = 0, on = true;
+  const ps = [];
+  const size = () => { const d = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  size(); addEventListener('resize', size);
+  const rtl = () => document.documentElement.dir === 'rtl';
+  const ember = () => ps.push({ x: Math.random() * W, y: H + 10, vx: (Math.random() - 0.5) * 18, vy: -(20 + Math.random() * 45), g: -4, life: 4 + Math.random() * 4, max: 8, r: 0.8 + Math.random() * 1.8, ember: true });
+  const burst = () => {
+    const ex = W * (rtl() ? 0.3 : 0.7) + (Math.random() - 0.5) * W * 0.12, ey = H * (0.62 + Math.random() * 0.12);
+    for (let k = 0; k < 26; k++) { const a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 1.3, v = 140 + Math.random() * 320; ps.push({ x: ex, y: ey, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: 420, life: 0.5 + Math.random() * 0.9, max: 1.4, r: 1 + Math.random() * 1.3 }); }
+  };
+  const io = new IntersectionObserver(([e]) => { const was = on; on = e.isIntersecting; if (on && !was) { last = performance.now(); raf = requestAnimationFrame(loop); } });
+  io.observe(cv);
+  function loop(now) {
+    if (!on || document.hidden || !document.contains(cv)) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (Math.random() < 0.35 && ps.length < 160) ember();
+    next -= dt; if (next <= 0) { burst(); next = 0.9 + Math.random() * 2.2; }
+    ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter';
+    for (let i = ps.length - 1; i >= 0; i--) {
+      const p = ps[i]; p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
+      if (p.ember) p.vx += Math.sin(now / 600 + i) * 2 * dt;
+      if (p.life <= 0 || p.y < -20 || p.x < -20 || p.x > W + 20) { ps.splice(i, 1); continue; }
+      const a = Math.min(1, (p.life / p.max) * 1.6);
+      if (p.ember) { ctx.fillStyle = `hsla(${24 + (i % 20)}, 100%, ${55 + (i % 15)}%, ${(a * 0.75).toFixed(3)})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
+      else { ctx.strokeStyle = `hsla(${32 + (i % 18)}, 100%, 70%, ${a.toFixed(3)})`; ctx.lineWidth = p.r; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.035, p.y - p.vy * 0.035); ctx.stroke(); }
+    }
+    raf = requestAnimationFrame(loop);
+  }
+  raf = requestAnimationFrame(loop);
+  return () => { cancelAnimationFrame(raf); io.disconnect(); removeEventListener('resize', size); on = false; };
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && $('#sparks') && sparkStop) { sparkStop(); sparkStop = sparks($('#sparks')); } });
+/* split a headline into masked words for the rise-in animation */
+function splitWords(el) {
+  if (el.dataset.split || REDUCED) return; el.dataset.split = 1; let i = 0;
+  const walk = (node) => [...node.childNodes].forEach((c) => {
+    if (c.nodeType === 3) {
+      const frag = document.createDocumentFragment();
+      c.textContent.split(/(\s+)/).forEach((w) => {
+        if (!w) return;
+        if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); return; }
+        const o = document.createElement('span'); o.className = 'w'; const n = document.createElement('span'); n.textContent = w; n.style.setProperty('--i', i++); o.appendChild(n); frag.appendChild(o);
+      });
+      c.replaceWith(frag);
+    } else if (c.nodeType === 1) walk(c);
+  });
+  walk(el);
+}
+/* the order journey plays itself while visible, until the visitor clicks a stage */
+function autoJourney() {
+  const box = $('#jnTool'); if (!box || REDUCED || jnUser) return;
+  const io = new IntersectionObserver(([e]) => {
+    clearInterval(jnT); $('#jnAuto')?.classList.toggle('run', e.isIntersecting && !jnUser);
+    if (e.isIntersecting && !jnUser) jnT = setInterval(() => { if (!document.contains(box)) { clearInterval(jnT); io.disconnect(); return; } jnCur = (jnCur + 1) % JOURNEY.length; renderJourney(); }, 3000);
+  }, { threshold: 0.4 });
+  io.observe(box);
+}
+/* soft spotlight that follows the pointer on cards */
+document.addEventListener('pointermove', (e) => {
+  const c = e.target.closest?.('.s3, .svc, .why > div'); if (!c) return;
+  const r = c.getBoundingClientRect(); c.style.setProperty('--mx', `${e.clientX - r.left}px`); c.style.setProperty('--my', `${e.clientY - r.top}px`);
+}, { passive: true });
 
 /* ==========================================================================
    AI assistant — general company information in five languages. For a
